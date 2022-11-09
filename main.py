@@ -33,18 +33,28 @@ class EInkReceiver():
         with open('ready.txt', 'r') as fs:
             self.epd.display(eval(fs.readline()))
 
-    def on_message(self, topic, message):
+    def on_message(self, topic, payload):
         print(topic.decode('UTF-8'))
         if topic.decode('UTF-8') == self.data['mqtt']['topic']:
-            if message.decode('UTF-8') != "Error":
+            try: 
+                message = payload.decode('UTF-8')
+            except UnicodeError:
                 self.epd.init(0)
                 try:
-                    data = eval(message)
-                    self.epd.display(data)
+                    self.epd.display(payload)
                 except Exception as e:
                     print(e)
                     self.mqtt.send_message("Error")
-                self.epd.sleep()
+            else:
+                if message != "Error":
+                    self.epd.init(0)
+                    try:
+                        data = eval(message)
+                        self.epd.display(data)
+                    except Exception as e:
+                        print(e)
+                        self.mqtt.send_message("Error")
+            self.epd.sleep()
 
     def listen(self):
         if not self.__silent:
