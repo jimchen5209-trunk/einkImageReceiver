@@ -1,5 +1,6 @@
 import json
 from waveshare_epd import epd1in54_V2
+from errorlog import ErrorLogger
 from mqtt import MQTT
 
 class EInkReceiver():
