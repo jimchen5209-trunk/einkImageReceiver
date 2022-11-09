@@ -44,7 +44,8 @@ class MQTT:
         while True:
             try:
                 self.__mqtt.check_msg()
-            except OSError:
+            except OSError as e:
+                print(e)
                 error_logger = ErrorLogger()
                 error_times = error_logger.add_error('MQTT error')
                 error_logger.retry(error_times);
