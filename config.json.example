@@ -1,0 +1,19 @@
+{
+  "wifi" : [
+    {"ssid": "", "password": ""}
+  ],
+
+  "mqtt": {
+    "host": "",
+    "port": "1883",
+    "topic": "",
+    "username": "",
+    "password": ""
+  },
+  
+  "error": {
+    "log_limit": 10,
+    "error_retry": 10,
+    "retry_limit": 1800
+  }
+}
