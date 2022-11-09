@@ -47,7 +47,10 @@ class EInkReceiver():
                     print(e)
                     self.mqtt.send_message("Error")
             else:
-                if message != "Error":
+                if message.lower() == "clear":
+                    self.epd.init(0)
+                    self.epd.Clear(0xFF)
+                elif "error" not in message.lower():
                     self.epd.init(0)
                     try:
                         data = eval(message)
