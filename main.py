@@ -45,19 +45,19 @@ class EInkReceiver():
                     self.epd.display(payload)
                 except Exception as e:
                     print(e)
-                    self.mqtt.send_message("Error")
+                    self.mqtt.send_message("ERROR")
             else:
-                if message.lower() == "clear":
+                if message == "CLEAR":
                     self.epd.init(0)
                     self.epd.Clear(0xFF)
-                elif "error" not in message.lower():
+                elif "ERROR" not in message:
                     self.epd.init(0)
                     try:
                         data = eval(message)
                         self.epd.display(data)
                     except Exception as e:
                         print(e)
-                        self.mqtt.send_message("Error")
+                        self.mqtt.send_message("ERROR")
             self.epd.sleep()
 
     def listen(self):
