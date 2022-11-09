@@ -8,15 +8,20 @@ class EInkReceiver():
             self.data = json.loads(f.read())
 
         self.__error_logger = ErrorLogger()
+        self.__silent = False
         errors = self.__error_logger.read_error()
+        self.epd = epd1in54_V2.EPD()
         if len(errors) != 0:
+            self.__silent = True
+            self.epd.init(0)
+            print("Recovered from error")
             print(errors)
             self.__error_logger.clear_error()
-        self.epd = epd1in54_V2.EPD()
-        self.epd.init(0)
-        self.epd.Clear(0xFF)
+        else:
+            self.epd.init(0)
+            self.epd.Clear(0xFF)
+            self.__display_init()
 
-        self.__display_init()
         self.mqtt = MQTT()
         self.mqtt.set_on_message(self.on_message)
 
@@ -42,7 +47,8 @@ class EInkReceiver():
                 self.epd.sleep()
 
     def listen(self):
-        self.__display_ready()
+        if not self.__silent:
+            self.__display_ready()
         self.epd.sleep()
         self.mqtt.listen()
 
