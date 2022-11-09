@@ -1,7 +1,8 @@
-import time
+import json
 from umqttsimple import MQTTClient
 import ubinascii
 from machine import unique_id, reset
+from errorlog import ErrorLogger
 
 
 class MQTT:
@@ -10,15 +11,15 @@ class MQTT:
         with open('./config.json', 'r') as f:
             self.__data = json.loads(f.read())
 
-        self.__host = self.__data
-        self.__port = self.__data
-        self.__topic = self.__data
-        self.__username = self.__data
-        self.__password = self.__data
+        self.__host = self.__data['mqtt']['host']
+        self.__port = self.__data['mqtt']['port']
+        self.__topic = self.__data['mqtt']['topic']
+        self.__username = self.__data['mqtt']['username']
+        self.__password = self.__data['mqtt']['password']
         self.__keepalive = 60
 
         # connect to mqtt client
-        self.mqtt = MQTTClient(
+        self.__mqtt = MQTTClient(
             client_id=ubinascii.hexlify(unique_id()),
             server=self.__host,
             port=self.__port,
@@ -28,7 +29,6 @@ class MQTT:
         )
 
         self.__mqtt.connect()
-        self.__mqtt.subscribe(self.__topic)
 
     def send_message(self, msg):
         self.__mqtt.publish(self.__topic, msg)
@@ -38,3 +38,13 @@ class MQTT:
 
     def set_on_message(self, f):
         self.__mqtt.set_callback(f)
+
+    def listen(self):
+        self.__mqtt.subscribe(self.__topic)
+        while True:
+            try:
+                self.__mqtt.check_msg()
+            except OSError:
+                error_logger = ErrorLogger()
+                error_times = error_logger.add_error('MQTT error')
+                error_logger.retry(error_times);
