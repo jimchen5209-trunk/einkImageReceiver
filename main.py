@@ -1,5 +1,5 @@
 import json
-from waveshare_epd import epd1in54_V2
+from waveshare_epd import epd7in5bc
 from errorlog import ErrorLogger
 from mqtt import MQTT
 
@@ -11,7 +11,7 @@ class EInkReceiver():
         self.__error_logger = ErrorLogger()
         self.__silent = False
         errors = self.__error_logger.read_error()
-        self.epd = epd1in54_V2.EPD()
+        self.epd = epd7in5bc.EPD()
         if len(errors) != 0:
             self.__silent = True
             self.epd.init(0)
