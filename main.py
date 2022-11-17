@@ -54,11 +54,11 @@ class EInkReceiver():
         buf = bytearray(self.epd.width * self.epd.height// 8)
         fb = framebuf.FrameBuffer(buf, self.epd.width, self.epd.height, framebuf.MONO_HLSB)
         fb.fill(1)
-        fb.text("Ready to receive imagge", 10, 10 ,0)
+        fb.text("Ready to receive image", 10, 10 ,0)
         buf_r = bytearray(self.epd.width * self.epd.height// 8)
         fb_r = framebuf.FrameBuffer(buf_r, self.epd.width, self.epd.height, framebuf.MONO_HLSB)
         fb_r.fill(1)
-        fb_r.text("Ready to receive imagge", 10, 18 ,0)
+        fb_r.text("Ready to receive image", 10, 18 ,0)
         print(f"Memory free: {gc.mem_free()}")
         self.epd.display(buf, buf_r)
 
