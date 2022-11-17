@@ -4,9 +4,12 @@ from waveshare_epd import epd7in5bc
 from errorlog import ErrorLogger
 from mqtt import MQTT
 import framebuf
+from machine import Pin
 
 class EInkReceiver():
     def __init__(self):
+        self.led=Pin(2, Pin.OUT)
+        self.led(1)
         print(f"Memory free: {gc.mem_free()}")
         with open('./config.json', 'r') as f:
             self.data = json.loads(f.read())
@@ -60,6 +63,7 @@ class EInkReceiver():
         self.epd.display(buf, buf_r)
 
     def on_message(self, topic, payload):
+        self.led(1)
         print(topic.decode('UTF-8'))
         if topic.decode('UTF-8') == self.data['mqtt']['topic']:
             try: 
@@ -74,6 +78,8 @@ class EInkReceiver():
                 elif "ERROR" not in message:
                     self.__display(eval(message))
             self.epd.sleep()
+        
+        self.led(0)
 
     def __display(self, buff_b):
         self.epd.init()
@@ -93,6 +99,7 @@ class EInkReceiver():
             self.__display_ready()
             gc.collect()
         self.epd.sleep()
+        self.led(0)
         self.mqtt.listen()
 
 main = EInkReceiver()
