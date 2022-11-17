@@ -41,6 +41,8 @@ class MQTT:
 
     def listen(self):
         self.__mqtt.subscribe(self.__topic)
+        self.__mqtt.subscribe(f"{self.__topic}/black")
+        self.__mqtt.subscribe(f"{self.__topic}/red")
         while True:
             try:
                 self.__mqtt.check_msg()
