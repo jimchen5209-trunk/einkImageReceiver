@@ -18,22 +18,12 @@ class EInkReceiver():
         self.__silent = False
         errors = self.__error_logger.read_error()
         self.epd = epd7in5bc.EPD()
+        self.epd.init()
         if len(errors) != 0:
             self.__silent = True
-            self.epd.init()
             print("Recovered from error")
             print(errors)
             self.__error_logger.clear_error()
-        else:
-            self.epd.init()
-            print(f"Memory free: {gc.mem_free()}")
-            self.epd.Clear()
-            print(f"Memory free: {gc.mem_free()}")
-            gc.collect()
-            print(f"Memory free after gc: {gc.mem_free()}")
-            self.__display_init()
-            gc.collect()
-            print(f"Memory free after gc: {gc.mem_free()}")
 
         self.mqtt = MQTT()
         self.mqtt.set_on_message(self.on_message)
