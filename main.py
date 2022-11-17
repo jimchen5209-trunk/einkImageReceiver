@@ -59,10 +59,7 @@ class EInkReceiver():
                     buf = bytearray(self.epd.width * self.epd.height// 8)
                     fb = framebuf.FrameBuffer(buf, self.epd.width, self.epd.height, framebuf.MONO_HLSB)
                     fb.fill(1)
-                    if topic.decode('UTF-8').endswith("black"):
-                        self.__temp_black = buf
-                    elif topic.decode('UTF-8').endswith("red"):
-                        self.__temp_red = buf
+                    self.__save(topic, buf)
                 elif "ERROR" not in message:
                     self.__save(topic, eval(message))
         
