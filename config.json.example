@@ -18,6 +18,9 @@
   },
 
   "pins": {
-    "indicator_led": 2
+    "indicator_led": {
+      "pin": 2,
+      "invert": false
+    }
   }
 }
