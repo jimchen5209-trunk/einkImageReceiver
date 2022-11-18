@@ -29,7 +29,7 @@ class EInkReceiver():
         self.__temp_red = None
 
     def on_message(self, topic, payload):
-        self.led.turn_on()
+        self.__led.turn_on()
         print(topic.decode('UTF-8'))
         if topic.decode('UTF-8').startswith(self.data['mqtt']['topic']):
             try: 
@@ -49,7 +49,7 @@ class EInkReceiver():
                 elif "ERROR" not in message:
                     self.__save(topic, eval(message))
 
-        self.led.turn_off()
+        self.__led.turn_off()
 
     def __save(self, topic, buffer):
         if topic.decode('UTF-8').endswith("black"):
@@ -81,7 +81,7 @@ class EInkReceiver():
 
     def listen(self):
         self.epd.sleep()
-        self.led.turn_off()
+        self.__led.turn_off()
         self.mqtt.listen()
 
 main = EInkReceiver()
