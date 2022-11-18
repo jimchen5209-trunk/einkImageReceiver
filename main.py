@@ -3,7 +3,6 @@ import json
 from waveshare_epd import epd7in5
 from errorlog import ErrorLogger
 from mqtt import MQTT
-import framebuf
 from led import Led
 
 class EInkReceiver():
@@ -26,7 +25,6 @@ class EInkReceiver():
         self.mqtt = MQTT()
         self.mqtt.set_on_message(self.on_message)
         self.__temp_black = None
-        self.__temp_red = None
 
     def on_message(self, topic, payload):
         self.__led.turn_on()
@@ -55,7 +53,7 @@ class EInkReceiver():
         self.epd.init()
         try:
             print(f"Memory free: {gc.mem_free()}")
-            self.epd.display(self.__temp_black, self.__temp_red)
+            self.epd.display(self.__temp_black)
         except Exception as e:
             print(e)
             self.mqtt.send_message("ERROR")
