@@ -16,8 +16,8 @@ class Led:
     def turn_off(self):
         self.__led(self.__led_off)
 
-    def error_flash(self):
-        for _ in range(5):
+    def flash(self, times = 5):
+        for _ in range(times):
             self.turn_off()
             utime.sleep_ms(200)
             self.turn_on()
