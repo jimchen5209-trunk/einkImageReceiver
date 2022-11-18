@@ -48,4 +48,10 @@ class MQTT:
                 print(e)
                 error_logger = ErrorLogger()
                 error_times = error_logger.add_error('MQTT error')
-                error_logger.retry(error_times);
+                error_logger.retry(error_times)
+            except MemoryError as e:
+                print(e)
+                self.send_message("ERROR")
+                error_logger = ErrorLogger()
+                error_times = error_logger.add_error('Memory error')
+                error_logger.retry(error_times)
