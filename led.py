@@ -1,4 +1,5 @@
 import json
+import utime
 from machine import Pin
 
 class Led:
@@ -14,3 +15,10 @@ class Led:
 
     def turn_off(self):
         self.__led(self.__led_off)
+
+    def error_flash(self):
+        for _ in range(5):
+            self.turn_off()
+            utime.sleep_ms(200)
+            self.turn_on()
+            utime.sleep_ms(200)
