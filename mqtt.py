@@ -47,7 +47,7 @@ class MQTT:
                 self.__mqtt.check_msg()
             except OSError as e:
                 led = Led()
-                led.error_flash(3)
+                led.flash(3)
                 print(f"MQTT error {e}")
                 self.__mqtt.disconnect()
                 self.__mqtt.connect()
