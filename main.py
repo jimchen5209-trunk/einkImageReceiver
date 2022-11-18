@@ -38,7 +38,7 @@ class EInkReceiver():
             self.epd.display(eval(fs.readline()))
 
     def on_message(self, topic, payload):
-        self.led.turn_on()
+        self.__led.turn_on()
         print(topic.decode('UTF-8'))
         if topic.decode('UTF-8') == self.data['mqtt']['topic']:
             try: 
@@ -63,13 +63,13 @@ class EInkReceiver():
                         print(e)
                         self.mqtt.send_message("ERROR")
             self.epd.sleep()
-        self.led.turn_off()
+        self.__led.turn_off()
 
     def listen(self):
         if not self.__silent:
             self.__display_ready()
         self.epd.sleep()
-        self.led.turn_off()
+        self.__led.turn_off()
         self.mqtt.listen()
 
 main = EInkReceiver()
