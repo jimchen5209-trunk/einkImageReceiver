@@ -2,6 +2,7 @@ import json
 import time
 import machine
 import utime
+from led import Led
 
 class ErrorLogger:
     def __init__(self):
@@ -30,12 +31,12 @@ class ErrorLogger:
         return min(self.__error_retry * times, self.__retry_time_limit)
 
     def retry(self, times):
-        led = machine.Pin(self.__data['pins']['indicator_led'], machine.Pin.OUT)
+        led = Led()
         reset_time = self.__retry_time(times)
         for _ in range(5):
-            led(0)
+            led.turn_off()
             utime.sleep_ms(200)
-            led(1)
+            led.turn_on()
             utime.sleep_ms(200)
         print(f'Resetting in {reset_time} seconds')
         time.sleep(reset_time)

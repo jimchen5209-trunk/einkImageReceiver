@@ -2,15 +2,15 @@ import json
 from waveshare_epd import epd1in54_V2
 from errorlog import ErrorLogger
 from mqtt import MQTT
-from machine import Pin
+from led import Led
 
 class EInkReceiver():
     def __init__(self):
+        self.__led = Led()
+        self.__led.turn_on()
         with open('./config.json', 'r') as f:
             self.data = json.loads(f.read())
 
-        self.led = Pin(self.data['pins']['indicator_led'], Pin.OUT)
-        self.led(0)
         self.__error_logger = ErrorLogger()
         self.__silent = False
         errors = self.__error_logger.read_error()
@@ -38,7 +38,7 @@ class EInkReceiver():
             self.epd.display(eval(fs.readline()))
 
     def on_message(self, topic, payload):
-        self.led(0)
+        self.led.turn_on()
         print(topic.decode('UTF-8'))
         if topic.decode('UTF-8') == self.data['mqtt']['topic']:
             try: 
@@ -63,13 +63,13 @@ class EInkReceiver():
                         print(e)
                         self.mqtt.send_message("ERROR")
             self.epd.sleep()
-        self.led(1)
+        self.led.turn_off()
 
     def listen(self):
         if not self.__silent:
             self.__display_ready()
         self.epd.sleep()
-        self.led(1)
+        self.led.turn_off()
         self.mqtt.listen()
 
 main = EInkReceiver()
