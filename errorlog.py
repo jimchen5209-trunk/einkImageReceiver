@@ -32,12 +32,8 @@ class ErrorLogger:
 
     def retry(self, times):
         led = Led()
+        led.error_flash()
         reset_time = self.__retry_time(times)
-        for _ in range(5):
-            led.turn_off()
-            utime.sleep_ms(200)
-            led.turn_on()
-            utime.sleep_ms(200)
         print(f'Resetting in {reset_time} seconds')
         time.sleep(reset_time)
         machine.reset()
