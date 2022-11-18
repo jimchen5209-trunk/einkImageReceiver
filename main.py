@@ -8,12 +8,12 @@ from machine import Pin
 
 class EInkReceiver():
     def __init__(self):
-        self.led=Pin(2, Pin.OUT)
-        self.led(1)
         print(f"Memory free: {gc.mem_free()}")
         with open('./config.json', 'r') as f:
             self.data = json.loads(f.read())
 
+        self.led = Pin(self.data['pins']['indicator_led'], Pin.OUT)
+        self.led(1)
         self.__error_logger = ErrorLogger()
         errors = self.__error_logger.read_error()
         self.epd = epd7in5bc.EPD()

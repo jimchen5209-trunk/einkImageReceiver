@@ -15,5 +15,9 @@
     "log_limit": 10,
     "error_retry": 10,
     "retry_limit": 1800
+  },
+
+  "pins": {
+    "indicator_led": 2
   }
 }
