@@ -6,11 +6,11 @@ from machine import Pin
 
 class EInkReceiver():
     def __init__(self):
-        self.led = Pin(5, Pin.OUT)
-        self.led(0)
         with open('./config.json', 'r') as f:
             self.data = json.loads(f.read())
 
+        self.led = Pin(self.data['pins']['indicator_led'], Pin.OUT)
+        self.led(0)
         self.__error_logger = ErrorLogger()
         self.__silent = False
         errors = self.__error_logger.read_error()

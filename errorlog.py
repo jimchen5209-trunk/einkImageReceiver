@@ -30,7 +30,7 @@ class ErrorLogger:
         return min(self.__error_retry * times, self.__retry_time_limit)
 
     def retry(self, times):
-        led = machine.Pin(2, machine.Pin.OUT)
+        led = machine.Pin(self.__data['pins']['indicator_led'], machine.Pin.OUT)
         reset_time = self.__retry_time(times)
         for _ in range(5):
             led(0)
