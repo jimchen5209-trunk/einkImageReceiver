@@ -1,3 +1,4 @@
+import json
 from machine import Pin
 
 class Led:
