@@ -3,11 +3,10 @@ from umqttsimple import MQTTClient
 import ubinascii
 from machine import unique_id, reset
 from errorlog import ErrorLogger
-
+from led import Led
 
 class MQTT:
     def __init__(self):
-
         with open('./config.json', 'r') as f:
             self.__data = json.loads(f.read())
 
@@ -47,10 +46,16 @@ class MQTT:
             try:
                 self.__mqtt.check_msg()
             except OSError as e:
-                print(e)
-                error_logger = ErrorLogger()
-                error_times = error_logger.add_error('MQTT error')
-                error_logger.retry(error_times)
+                led = Led()
+                led.error_flash()
+                print(f"MQTT error {e}")
+                self.__mqtt.disconnect()
+                self.__mqtt.connect()
+                self.__mqtt.subscribe(self.__topic)
+                self.__mqtt.subscribe(f"{self.__topic}/black")
+                self.__mqtt.subscribe(f"{self.__topic}/red")
+                print("MQTT connection restored")
+                led.turn_off()
             except MemoryError as e:
                 print(e)
                 self.send_message("ERROR")
