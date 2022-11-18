@@ -32,7 +32,7 @@ class ErrorLogger:
 
     def retry(self, times):
         led = Led()
-        led.error_flash()
+        led.flash()
         reset_time = self.__retry_time(times)
         print(f'Resetting in {reset_time} seconds')
         time.sleep(reset_time)
