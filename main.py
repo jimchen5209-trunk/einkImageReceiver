@@ -15,12 +15,10 @@ class EInkReceiver():
             self.data = json.loads(f.read())
 
         self.__error_logger = ErrorLogger()
-        self.__silent = False
         errors = self.__error_logger.read_error()
         self.epd = epd7in5bc.EPD()
         self.epd.init()
         if len(errors) != 0:
-            self.__silent = True
             print("Recovered from error")
             print(errors)
             self.__error_logger.clear_error()
@@ -29,18 +27,6 @@ class EInkReceiver():
         self.mqtt.set_on_message(self.on_message)
         self.__temp_black = None
         self.__temp_red = None
-
-    def __display_ready(self):
-        buf = bytearray(self.epd.width * self.epd.height// 8)
-        fb = framebuf.FrameBuffer(buf, self.epd.width, self.epd.height, framebuf.MONO_HLSB)
-        fb.fill(1)
-        fb.text("Ready to receive image", 10, 10 ,0)
-        buf_r = bytearray(self.epd.width * self.epd.height// 8)
-        fb_r = framebuf.FrameBuffer(buf_r, self.epd.width, self.epd.height, framebuf.MONO_HLSB)
-        fb_r.fill(1)
-        fb_r.text("Ready to receive image", 10, 18 ,0)
-        print(f"Memory free: {gc.mem_free()}")
-        self.epd.display(buf, buf_r)
 
     def on_message(self, topic, payload):
         self.led(1)
@@ -94,9 +80,6 @@ class EInkReceiver():
         gc.collect()
 
     def listen(self):
-        if not self.__silent:
-            self.__display_ready()
-            gc.collect()
         self.epd.sleep()
         self.led(0)
         self.mqtt.listen()
