@@ -50,8 +50,6 @@ class MQTT:
                 self.__mqtt.disconnect()
                 self.__mqtt.connect()
                 self.__mqtt.subscribe(self.__topic)
-                self.__mqtt.subscribe(f"{self.__topic}/black")
-                self.__mqtt.subscribe(f"{self.__topic}/red")
                 print("MQTT connection restored")
                 led.turn_off()
             except MemoryError as e:

@@ -1,3 +1,4 @@
+import gc
 import json
 from waveshare_epd import epd1in54_V2
 from errorlog import ErrorLogger
@@ -6,6 +7,7 @@ from led import Led
 
 class EInkReceiver():
     def __init__(self):
+        print(f"Memory free: {gc.mem_free()}")
         self.__led = Led()
         self.__led.turn_on()
         with open('./config.json', 'r') as f:
@@ -27,29 +29,35 @@ class EInkReceiver():
         self.__led.turn_on()
         print(topic.decode('UTF-8'))
         if topic.decode('UTF-8') == self.data['mqtt']['topic']:
-            try: 
+            gc.collect()
+            try:
                 message = payload.decode('UTF-8')
             except UnicodeError:
-                self.epd.init(0)
-                try:
-                    self.epd.display(payload)
-                except Exception as e:
-                    print(e)
-                    self.mqtt.send_message("ERROR")
+                self.__save(payload)
             else:
                 if message == "CLEAR":
                     self.epd.init(0)
                     self.epd.Clear(0xFF)
                 elif "ERROR" not in message:
-                    self.epd.init(0)
-                    try:
-                        data = eval(message)
-                        self.epd.display(data)
-                    except Exception as e:
-                        print(e)
-                        self.mqtt.send_message("ERROR")
-            self.epd.sleep()
+                    self.__save(eval(message))
+
         self.__led.turn_off()
+
+    def __save(self, buffer):
+        self.__temp_black = buffer
+        self.__display()
+
+    def __display(self):
+        self.epd.init(0)
+        try:
+            print(f"Memory free: {gc.mem_free()}")
+            self.epd.display(self.__temp_black)
+        except Exception as e:
+            print(e)
+            self.mqtt.send_message("ERROR")
+        self.__temp_black = None
+        self.epd.sleep()
+        gc.collect()
 
     def listen(self):
         self.epd.sleep()
