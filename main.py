@@ -12,30 +12,16 @@ class EInkReceiver():
             self.data = json.loads(f.read())
 
         self.__error_logger = ErrorLogger()
-        self.__silent = False
         errors = self.__error_logger.read_error()
         self.epd = epd1in54_V2.EPD()
+        self.epd.init(0)
         if len(errors) != 0:
-            self.__silent = True
-            self.epd.init(0)
             print("Recovered from error")
             print(errors)
             self.__error_logger.clear_error()
-        else:
-            self.epd.init(0)
-            self.epd.Clear(0xFF)
-            self.__display_init()
 
         self.mqtt = MQTT()
         self.mqtt.set_on_message(self.on_message)
-
-    def __display_init(self):
-        with open('init.txt', 'r') as fs:
-            self.epd.display(eval(fs.readline()))
-    
-    def __display_ready(self):
-        with open('ready.txt', 'r') as fs:
-            self.epd.display(eval(fs.readline()))
 
     def on_message(self, topic, payload):
         self.__led.turn_on()
@@ -66,8 +52,6 @@ class EInkReceiver():
         self.__led.turn_off()
 
     def listen(self):
-        if not self.__silent:
-            self.__display_ready()
         self.epd.sleep()
         self.__led.turn_off()
         self.mqtt.listen()
