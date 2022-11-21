@@ -35,10 +35,10 @@ class MicroPython:
 
     def __init__(self):
         from machine import Pin  # pylint: disable=C0415
-        self.CS_PIN = self.cs = Pin(33)
-        self.DC_PIN = self.dc = Pin(32)
-        self.RST_PIN = self.rst = Pin(19)
-        self.BUSY_PIN = self.busy = Pin(35)
+        self.CS_PIN = self.cs = Pin(15)
+        self.DC_PIN = self.dc = Pin(27)
+        self.RST_PIN = self.rst = Pin(26)
+        self.BUSY_PIN = self.busy = Pin(25)
 
     def digital_write(self, pin, value):
         pin(value)
@@ -58,9 +58,9 @@ class MicroPython:
 
     def module_init(self):
         from machine import Pin, SPI  # pylint: disable=C0415
-        clk = Pin(18)
-        mosi = Pin(23)
-        miso = Pin(19)
+        clk = Pin(13)
+        mosi = Pin(14)
+        miso = Pin(26)
         self.spi = SPI(2, baudrate=20000000, polarity=0, phase=0, sck=clk, miso=miso, mosi=mosi)
         self.cs.init(self.cs.OUT, value=1)
         self.dc.init(self.dc.OUT, value=0)
